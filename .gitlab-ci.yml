@@ -12,7 +12,7 @@ deploy:
     AWS_SECRET_ACCESS_KEY: z+K72rwR8g7cpiXOTS1xIa8xdrjvqjRdo7hsr2Rs
     AWS_DEFAULT_REGION: ap-south-1
   script:
-    - aws cloudformation deploy --template-file cloudformation/ec2-instance.yaml --stack-name MyEC2Stack --capabilities CAPABILITY_IAM
+    - aws cloudformation deploy --template-file cloudformation/ec2-instance.yaml --stack-name MyStack --capabilities CAPABILITY_IAM
 
 validate:
   stage: validate
