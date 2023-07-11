@@ -14,12 +14,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}" >> $GITHUB_ENV
 
       - name: Deploy CloudFormation Stack
         run: |
-          aws cloudformation deploy --template-file cloudformation/template.yaml --stack-name MyStack --capabilities CAPABILITY_IAM
+          aws cloudformation deploy --template-file cloudformation/template.yaml --stack-name MyStack --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
