@@ -2,5 +2,11 @@ Resources:
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-12345678
+      ImageId: ami-06ca3ca175f37dd66
       InstanceType: t2.micro
+      KeyName: sam-key
+      VpcId: !Ref SamVPC
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          SubnetId: !Ref SamSubnet
