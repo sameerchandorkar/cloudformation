@@ -1,4 +1,18 @@
+AWSTemplateFormatVersion: "2010-09-09"
 Resources:
+  SamVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+
+  SamSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref SamVPC
+      CidrBlock: 10.0.0.0/24
+
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
