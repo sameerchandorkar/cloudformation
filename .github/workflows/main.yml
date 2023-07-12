@@ -21,4 +21,4 @@ jobs:
 
       - name: Deploy CloudFormation Stack
         run: |
-          aws cloudformation deploy --template-file ec2-instance.yaml --stack-name MyStack --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
+          aws cloudformation deploy --template-file s3.yaml --stack-name MyStack --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
