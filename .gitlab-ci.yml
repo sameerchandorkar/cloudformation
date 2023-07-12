@@ -2,11 +2,17 @@ stages:
   - deploy
   - validate
 
+before_script:
+  - apt-get update && apt-get install -y unzip
+  - curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - sudo ./aws/install
+
+
 deploy:
   stage: deploy
   image:
     name: amazon/aws-cli:2.x
-    entrypoint: [""]
   variables:
     AWS_ACCESS_KEY_ID: AKIA2VAGTNBZFH4B6TOD
     AWS_SECRET_ACCESS_KEY: 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
@@ -18,7 +24,6 @@ validate:
   stage: validate
   image:
     name: amazon/aws-cli:2.x
-    entrypoint: [""]
   variables:
     AWS_ACCESS_KEY_ID: AKIA2VAGTNBZFH4B6TOD
     AWS_SECRET_ACCESS_KEY: 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
