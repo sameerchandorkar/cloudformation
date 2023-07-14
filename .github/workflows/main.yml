@@ -21,4 +21,4 @@ jobs:
 
       - name: Deploy CloudFormation Stack
         run: |
-          aws cloudformation deploy --template-file failed_changeset_template.yaml --stack-name SAM --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
+          aws cloudformation deploy --template-file failed_changeset_template.yaml --stack-name SAM1 --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
