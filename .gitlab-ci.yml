@@ -18,7 +18,7 @@ deploy:
     AWS_SECRET_ACCESS_KEY: z+K72rwR8g7cpiXOTS1xIa8xdrjvqjRdo7hsr2Rs
     AWS_DEFAULT_REGION: ap-south-1
   script:
-    - aws cloudformation deploy --template-file ec2-instance.yaml --stack-name MyStack --capabilities CAPABILITY_IAM --disable-rollback
+    - aws cloudformation deploy --template-file failed_changeset_template.yaml --stack-name MyStack --capabilities CAPABILITY_IAM --disable-rollback
 
 validate:
   stage: validate
@@ -29,4 +29,4 @@ validate:
     AWS_SECRET_ACCESS_KEY: z+K72rwR8g7cpiXOTS1xIa8xdrjvqjRdo7hsr2Rs
     AWS_DEFAULT_REGION: ap-south-1
   script:
-    - aws cloudformation validate-template --template-body file://ec2-instance.yaml --disable-rollback
+    - aws cloudformation validate-template --template-body file://failed_changeset_template.yaml --disable-rollback
