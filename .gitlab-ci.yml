@@ -14,9 +14,9 @@ deploy:
   image:
     name: amazon/aws-cli:2.x
   variables:
-    AWS_ACCESS_KEY_ID: AKIA2VAGTNBZFH4B6TOD
-    AWS_SECRET_ACCESS_KEY: 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
-    AWS_DEFAULT_REGION: ap-south-1
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
   script:
     - aws cloudformation deploy --template-file failed_changeset_template.yaml --stack-name SAM1 --capabilities CAPABILITY_IAM --disable-rollback
 
@@ -25,8 +25,8 @@ validate:
   image:
     name: amazon/aws-cli:2.x
   variables:
-    AWS_ACCESS_KEY_ID: AKIA2VAGTNBZFH4B6TOD
-    AWS_SECRET_ACCESS_KEY: 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
-    AWS_DEFAULT_REGION: ap-south-1
+    AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+    AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
   script:
     - aws cloudformation validate-template --template-body file://failed_changeset_template.yaml --disable-rollback
