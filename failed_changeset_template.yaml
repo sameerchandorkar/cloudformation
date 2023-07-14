@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  FailedChangeSet1:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: InvalidBucketName1*
+
+  FailedChangeSet2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: InvalidInstanceType
+
+  FailedChangeSet3:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: InvalidEmailAddress
+          Protocol: InvalidProtocol
+
+  FailedChangeSet4:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: InvalidBucketName2*
+
+  FailedChangeSet5:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: InvalidInstanceType
+
+FailedChangeSet6:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: InvalidBucketName1*
+
+  FailedChangeSet7:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: InvalidInstanceType
+
+  FailedChangeSet8:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: InvalidEmailAddress
+          Protocol: InvalidProtocol
+
+  FailedChangeSet9:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: InvalidBucketName2*
+
+  FailedChangeSet10:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: InvalidInstanceType
+  # Repeat the above pattern for FailedChangeSet6 through FailedChangeSet20
