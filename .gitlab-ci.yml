@@ -18,7 +18,7 @@ deploy:
     AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
   script:
-    - aws cloudformation deploy --template-file vpc-bastian-ec2.yaml --stack-name SAM1 --capabilities CAPABILITY_IAM --disable-rollback
+    - aws cloudformation deploy --template-file vpc-bastian-ec2.yaml --stack-name ec2-bastian --capabilities CAPABILITY_IAM --disable-rollback
 
 validate:
   stage: validate
