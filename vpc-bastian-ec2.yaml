@@ -1,0 +1,177 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  BastianVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: bastian-vpc
+
+  PublicSubnetAPublic1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BastianVPC
+      CidrBlock: 10.0.0.0/20
+      AvailabilityZone: ap-south-1a
+      MapPublicIpOnLaunch: true   # Enable auto-assign public IPv4 address
+      Tags:
+        - Key: Name
+          Value: bastian-subnet-public1-ap-south-1a
+
+  PublicSubnetBPublic2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BastianVPC
+      CidrBlock: 10.0.16.0/20
+      AvailabilityZone: ap-south-1b
+      MapPublicIpOnLaunch: true   # Enable auto-assign public IPv4 address
+      Tags:
+        - Key: Name
+          Value: bastian-subnet-public2-ap-south-1b
+
+  PrivateSubnetAPrivate1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BastianVPC
+      CidrBlock: 10.0.128.0/20
+      AvailabilityZone: ap-south-1a
+      Tags:
+        - Key: Name
+          Value: bastian-subnet-private1-ap-south-1a
+
+  PrivateSubnetBPrivate2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref BastianVPC
+      CidrBlock: 10.0.144.0/20
+      AvailabilityZone: ap-south-1b
+      Tags:
+        - Key: Name
+          Value: bastian-subnet-private2-ap-south-1b
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref BastianVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref BastianVPC
+      Tags:
+        - Key: Name
+          Value: bastian-rtb-public
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref BastianVPC
+      Tags:
+        - Key: Name
+          Value: bastian-rtb-private1-ap-south-1a
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref BastianVPC
+      Tags:
+        - Key: Name
+          Value: bastian-rtb-private2-ap-south-1b
+
+  PublicSubnetAPrivate1Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetAPublic1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnetBPrivate2Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetBPublic2
+      RouteTableId: !Ref PublicRouteTable
+
+  PrivateSubnetAPrivate1Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetAPrivate1
+      RouteTableId: !Ref PrivateRouteTable1
+
+  PrivateSubnetBPrivate2Association:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetBPrivate2
+      RouteTableId: !Ref PrivateRouteTable2
+
+  BastionSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Security group for the bastion host
+      VpcId: !Ref BastianVPC
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+
+  BastionHost:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0da59f1af71ea4ad2
+      KeyName: sam-bastian-key
+      SubnetId: !Ref PublicSubnetAPublic1  # Choose the appropriate subnet
+      AvailabilityZone: ap-south-1a
+      SecurityGroupIds:
+        - !Ref BastionSecurityGroup
+      Tags:
+        - Key: Name
+          Value: sam-bastian
+
+  NatEIP:
+    Type: AWS::EC2::EIP
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatEIP.AllocationId
+      SubnetId: !Ref PublicSubnetAPublic1
+
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    DependsOn: NatGateway
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+  PrivateRoute2:
+    Type: AWS::EC2::Route
+    DependsOn: NatGateway
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+
+Outputs:
+  VPCId:
+    Description: VPC Id
+    Value: !Ref BastianVPC
+
+  PublicSubnetIds:
+    Description: Comma-separated list of Public Subnet IDs
+    Value: !Join [",", [!Ref PublicSubnetAPublic1, !Ref PublicSubnetBPublic2]]
