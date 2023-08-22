@@ -24,17 +24,18 @@ jobs:
         run: |
           stack_status=$(aws cloudformation describe-stacks --stack-name ec2-bastian --query "Stacks[0].StackStatus" --output text 2>/dev/null || echo "NOT_EXIST")
           echo "Stack Status: $stack_status"
-          echo "::set-output name=stack_status::$stack_status"
+          echo "STACK_STATUS=$stack_status" >> $GITHUB_ENV
 
       - name: Deploy or Update CloudFormation Stack
         run: |
-          if [[ "${{ steps.check-stack.outputs.stack_status }}" == "NOT_EXIST" ]]; then
+          stack_status=${{ env.STACK_STATUS }}
+          if [[ "$stack_status" == "NOT_EXIST" ]]; then
             echo "Creating CloudFormation stack..."
             aws cloudformation create-stack --template-body file://vpc-bastian-ec2.yaml --stack-name ec2-bastian --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
-          elif [[ "${{ steps.check-stack.outputs.stack_status }}" == "CREATE_COMPLETE" || "${{ steps.check-stack.outputs.stack_status }}" == "UPDATE_COMPLETE" ]]; then
+          elif [[ "$stack_status" == "CREATE_COMPLETE" || "$stack_status" == "UPDATE_COMPLETE" ]]; then
             echo "Stack already exists, updating if needed..."
             aws cloudformation deploy --template-file vpc-bastian-ec2.yaml --stack-name ec2-bastian --capabilities CAPABILITY_IAM --region $AWS_DEFAULT_REGION
           else
-            echo "Unexpected stack status: ${{ steps.check-stack.outputs.stack_status }}"
+            echo "Unexpected stack status: $stack_status"
             exit 1
           fi
