@@ -54,6 +54,10 @@ Resources:
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: bastian-InternetGateway
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
@@ -144,12 +148,19 @@ Resources:
 
   NatEIP:
     Type: AWS::EC2::EIP
+    Properties:
+      Tags:
+        - Key: Name
+          Value: Bastian-EIP
 
   NatGateway:
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt NatEIP.AllocationId
       SubnetId: !Ref PublicSubnetAPublic1
+      Tags:
+        - Key: Name
+          Value: Bastian-NatGateway
 
   PrivateRoute1:
     Type: AWS::EC2::Route
