@@ -26,6 +26,15 @@ jobs:
           echo "Stack Status: $stack_status"
           echo "STACK_STATUS=$stack_status" >> $GITHUB_ENV
 
+      - name: Wait for Stable Stack Status
+        run: |
+          stack_status=${{ env.STACK_STATUS }}
+          while [[ "$stack_status" == "CREATE_IN_PROGRESS" || "$stack_status" == "UPDATE_IN_PROGRESS" ]]; do
+            echo "Stack status is $stack_status, waiting for completion..."
+            sleep 30  # Wait for 30 seconds before checking again
+            stack_status=$(aws cloudformation describe-stacks --stack-name ec2-bastian --query "Stacks[0].StackStatus" --output text 2>/dev/null || echo "NOT_EXIST")
+          done
+
       - name: Deploy or Update CloudFormation Stack
         run: |
           stack_status=${{ env.STACK_STATUS }}
