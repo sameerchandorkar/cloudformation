@@ -139,7 +139,7 @@ Resources:
       ImageId: ami-090d68841c2a28756
       KeyName: sam-bastian-host
       SubnetId: !Ref PublicSubnetAPublic1  # Choose the appropriate subnet
-      AvailabilityZone: ap-south-1a
+      AvailabilityZone: ap-south-1b
       SecurityGroupIds:
         - !Ref BastionSecurityGroup
       Tags:
