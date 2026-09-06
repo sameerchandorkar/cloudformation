@@ -136,8 +136,8 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0da59f1af71ea4ad2
-      KeyName: sam-bastian-key
+      ImageId: ami-090d68841c2a28756
+      KeyName: sam-bastian-host
       SubnetId: !Ref PublicSubnetAPublic1  # Choose the appropriate subnet
       AvailabilityZone: ap-south-1a
       SecurityGroupIds:
